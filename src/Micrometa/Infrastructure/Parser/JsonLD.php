@@ -83,7 +83,6 @@ class JsonLD extends AbstractParser
      * @var CachingContextLoader
      */
     protected $contextLoader;
-    
     /**
      * Array for keeping track of the hierarchy of objects, to prevent recursion
      *
@@ -222,10 +221,6 @@ class JsonLD extends AbstractParser
      */
     protected function parseNodeType(NodeInterface $node): array
     {
-        if ($node->isBlankNode()) {
-            return [];
-        }
-      
         /** @var NodeInterface|NodeInterface[] $itemTypes */
         $itemTypes = $node->getType();
         $itemTypes = is_array($itemTypes) ? $itemTypes : [$itemTypes];
@@ -298,7 +293,7 @@ class JsonLD extends AbstractParser
         if (is_object($value)) {
             $this->processNodePropertyObject($name, $value, $properties);
 
-            // Else: If this is a value list
+        // Else: If this is a value list
         } elseif (is_array($value)) {
             foreach ($value as $listValue) {
                 $this->processNodeProperty($name, $listValue, $properties);
@@ -322,7 +317,7 @@ class JsonLD extends AbstractParser
         if (!empty($value->type) || !empty($value->lang)) {
             $properties[$name]->values[] = $value;
 
-            // @type = @id
+        // @type = @id
         } elseif (!empty($value->id)) {
             $properties[$name]->values[] = $value->id;
         }
@@ -341,11 +336,11 @@ class JsonLD extends AbstractParser
         if ($jsonLD instanceof NodeInterface) {
             return $this->parseNode($jsonLD);
 
-            // Else if it's a language tagged string
+        // Else if it's a language tagged string
         } elseif ($jsonLD instanceof LanguageTaggedString) {
             return $this->parseLanguageTaggedString($jsonLD);
 
-            // Else if it's a typed value
+        // Else if it's a typed value
         } elseif ($jsonLD instanceof TypedValue) {
             return $this->parseTypedValue($jsonLD);
         }

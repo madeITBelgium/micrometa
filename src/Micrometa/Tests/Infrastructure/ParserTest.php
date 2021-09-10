@@ -110,6 +110,20 @@ class ParserTest extends AbstractTestBase
     }
 
     /**
+     * Test the JSON-LD parser with example that was throwing an InvalidArgumentException.
+     * @see https://github.com/jkphl/micrometa/pull/59
+     */
+    public function testFixIncorrectEmptyTypeListInJsonLDParser()
+    {
+        $items = $this->parseItems('json-ld/jsonld-incorrect-empty-type-list.html', JsonLD::class, 0);
+        $this->assertTrue(is_array($items));
+        $this->assertEquals(1, count($items));
+
+        $type = $items[0]->getType();
+        $this->assertEquals('http://schema.org/Product', (string) $type[0]);
+    }
+
+    /**
      * Test the JSON-LD parser with an invalid document
      */
     public function testInvalidJsonLDParser()
@@ -203,5 +217,21 @@ class ParserTest extends AbstractTestBase
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertEquals(LinkType::FORMAT, $items[0]->getFormat());
         $this->assertEquals([new Iri(LinkType::HTML_PROFILE_URI, 'icon')], $items[0]->getType());
+    }
+
+    /**
+     * Test the JSON-LD parser with a valid recursion
+     */
+    public function testRecursionInJsonLDParser()
+    {
+        $items = $this->parseItems('json-ld/jsonld-recursion.html', JsonLD::class);
+        $this->assertTrue(is_array($items));
+        $this->assertInstanceOf(Item::class, $items[0]);
+
+        $url = $items[0]->getProperty('url');
+        $this->assertTrue(is_array($url));
+        $this->assertEquals(1, count($url));
+        $this->assertInstanceOf(StringValue::class, $url[0]);
+        $this->assertEquals('https://www.example.com/', strval($url[0]));
     }
 }
