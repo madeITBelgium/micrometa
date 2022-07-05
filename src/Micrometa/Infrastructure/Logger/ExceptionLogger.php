@@ -42,6 +42,7 @@ use Monolog\Logger;
 use Monolog\ResettableInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
+use Stringable;
 
 /**
  * Exception logger
