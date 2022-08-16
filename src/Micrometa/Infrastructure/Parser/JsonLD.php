@@ -147,7 +147,7 @@ class JsonLD extends AbstractParser
 
         // If this is not a valid JSON document: Return
         if (!is_object($jsonLDDoc) && !is_array($jsonLDDoc)) {
-            $this->logger->error('Skipping invalid JSON-LD document');
+            $this->logger->error('Skipping invalid JSON-LD document: ' . json_last_error_msg());
 
             return [];
         }
@@ -376,7 +376,8 @@ class JsonLD extends AbstractParser
     private function sanitizeJsonSource($jsonLDDocSource)
     {
         $jsonLDDocSource = trim($jsonLDDocSource);
-
+        $jsonLDDocSource = str_replace("\n", " ", $jsonLDDocSource);
+        
         if (substr($jsonLDDocSource, -1) === ';') {
             $jsonLDDocSource = substr_replace($jsonLDDocSource, '', -1);
         }
